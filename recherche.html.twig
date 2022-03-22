@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <title>Welcome!</title>
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+		<script type="text/javascript" src="js/scripts/search.js"></script>
+		
+        {% include 'header.html' %}
+		<script type="text/javascript">
+			jQuery(document).ready(function () { 
+{% for article in articles %}
+{% if article.pistes is defined %}
+{% if article.pistes|length > 0 %}
+					var myPlaylist_{{ article.refArticle }}= new jPlayerPlaylist({
+					cssSelectorAncestor : '#jp_container_{{ article.refArticle }}',
+					jPlayer: '#jquery_jplayer_{{ article.refArticle }}'}, [
+					{% for piste in article.pistes %}
+						{ title:'{{ piste.titre }}', mp3:'{{ piste.url }}' },
+					{% endfor %}
+					], { swfPath : '/js/jplayer-2.9.2/jplayer', supplied : 'mp3', wmode: 'window',
+					useStateClassSkin: true, autoBlur: false, smoothPlayBar: true,
+					keyEnabled: true });
+					var jp_playlist_tab = document.getElementsByClassName('jp-playlist') ;
+					for (i = 0; i < jp_playlist_tab.length; i++) {
+						jp_playlist_tab[i].style.display = 'none';
+					}
+{% endif %}
+{% endif %}
+{% endfor %}
+			});
+		</script>
+    </head>
+	<body>
+		<div id="wrapper">
+			<div id="inner-wrapper">
+				<header id="header" class="col-full">
+					<div id="logo">
+						<h1 class="site-title">Site web marchand</h1>
+					</div>
+					<nav id="site-navigation" class="main-navigation" role="navigation">
+						<button class="menu-toggle" aria-controls="site-navigation" aria-expanded="false">
+							<span>Menu</span>
+						</button>
+						<div class="menu">
+							<ul class="nav-menu">
+								<li class="page_item page-item-1 current_page_item focus">
+									<a href="/afficheRecherche">Rechercher
+										un article</a>
+								</li>
+								<li class="page_item page-item-2">
+									<a href="/accederAuPanier">Panier</a>
+								</li>
+							</ul>
+						</div>
+					</nav>
+					<form method="get" id="larecherche">
+						<input type="text" id="recherche" name="motCle" required>
+						<select id="categorie" name="categorie">
+							<option name="select_category">Selectionnez une catégorie</option>
+							<option name="Books">Livres</option>
+							<option name="Shoes">Chaussures</option>
+							<option name="Electronics">Electronique</option>
+							<option name="VideoGames">Jeux Vidéos</option>
+							<option name="DVD">DVD</option>
+							<option name="FashionMen">Vetements Homme</option>
+							<option name="fashionWomen">Vetements Femme</option>
+							<option name="fashionBaby">Vetements Enfant</option>
+							<option name="fashionGirls">Vetements Fille</option>
+							<option name="FashionBoys">Vetements Garcon</option>
+							<option name="Music">Musique</option>
+							<option name="Automotive">Automobile</option>
+						</select>
+						<input type="submit" name="valid" id="valid">
+						<div id="erreurs_cat"></div>
+					</form>
+				</header>
+				<div id="content" class="site-content" tabindex="-1">
+					<div class="col-full">
+						<div id="primary" class="content-area">
+							<main id="main" class="site-main" role="main">
+								<header class="woocommerce-products-header">
+									<h1 class="woocommerce-products-header__title page-title">Résultats de la recherche</h1>
+								</header>
+								<ul class="products columns-3">
+									{% for article in articles %}
+										{% if loop.index0 is divisible by(3) %}
+								    <li class="product type-product first">
+										{% else %}
+									<li class="product type-product">
+										{% endif %}
+									<a
+										href="/ajouterLigne?refArticle={{ article.refArticle }}"> <img
+											src="{{ article.image }}"
+											class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail" alt="poster_2_up"
+											/>
+											<h3>{{ article.titre }}</h3> <span class="price"><ins>
+													<span class="amount">{{ article.prix }} €</span>
+												</ins></span>
+
+									</a> <a
+										href="/ajouterLigne?refArticle={{ article.refArticle }}"
+										class="button product_type_simple add_to_cart_button">Mettre
+											dans le panier</a>
+
+										{% if article.pistes is defined %}
+											{% if article.pistes|length > 0 %}
+										<div id="jquery_jplayer_{{ article.refArticle }}" class="jp-jplayer"></div>
+										<div id="jp_container_{{ article.refArticle }}" class="jp-audio" role="application">
+											<div class="jp-type-playlist">
+												<div class="jp-gui jp-interface">
+													<div class="jp-controls-holder">
+														<div class="jp-controls">
+															<button class="jp-previous" role="button" tabindex="0">previous</button>
+															<button class="jp-play" role="button" tabindex="0">play</button>
+															<button class="jp-stop" role="button" tabindex="0">stop</button>
+															<button class="jp-next" role="button" tabindex="0">next</button>
+														</div>
+													</div>
+												</div>
+												<div class="jp-playlist">
+													<ul>
+														<li>&nbsp;</li>
+													</ul>
+												</div>
+												<div class="jp-no-solution">
+													<span>Update Required</span> To play the media you will need to
+													either update your browser to a recent version or update your <a
+														href="http://get.adobe.com/flashplayer/" target="_blank">Flash
+														plugin</a>.
+												</div>
+											</div>
+										</div> 
+											{% endif %}
+										{% endif %}
+									</li>
+									{% endfor %}
+								</ul>
+							</main>
+						</div>
+					</div><!-- .col-full -->
+				</div><!-- #content -->
+        {% include 'footer.html' %}
+			</div>
+		</div>
+	</body>
+</html>
